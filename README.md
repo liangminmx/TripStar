@@ -13,7 +13,7 @@
 
 > [!IMPORTANT]
 > 
-> 可直接魔撘平台使用已部署的项目：[旅途星辰 (TripStar) - AI 旅行智能体](https://modelscope.cn/studios/lcclxy/Journey-to-the-China)
+> 可直接魔撘平台使用已部署的项目：[旅途星辰 (TripStar) - AI 旅行智能体](https://modelscope.cn/studios/lcclxy/Journey-to-the-China)（暂时关闭）
 > 
 > 其中包括：旅行计划、景点地图、预算明细、每日行程：行程描述、交通方式、住宿推荐、景点安排（地址、游览时长、景点描述）、餐饮安排、天气信息、知识图谱可视化、沉浸式伴游 AI 问答......
 
@@ -63,7 +63,7 @@ graph TD
     end
 
     subgraph G4 ["服务层"]
-        D1["LLM模型API <br/> qwen/intern-latest"]
+        D1["LLM模型API <br/> doubao-seed-1-8-251228/intern-latest"]
         D2["高德 MCP Server <br/> 地理编码/POI搜索"]
         D3["天气/时间检索工具"]
     end
@@ -121,7 +121,7 @@ graph TD
 * Python 3.10+
 * Node.js 18+
 * 大模型 API Key（推荐使用兼容 OpenAI 格式的服务商，如阿里云百炼、书生浦语）
-* 高德地图 Web SDK API Key 和 Web 服务 API Key (并在配置中启用 **安全密钥 JSCode**)（[高德api](https://lbs.amap.com/)）
+* 高德地图两种key： Web服务 、 Web端(JS API) (其**安全密钥 JSCode**配置在index.html中)（[高德api](https://lbs.amap.com/)）
 * 图片抓取api（[Unsplash API](https://unsplash.com/developers)）
 * 系统已安装 `uv` 包管理器（用于 MCP 环境隔离）。
 
@@ -136,8 +136,8 @@ pip install -r requirements.txt
 
 # 复制配置文件并填入相应的 API KEY
 cp .env.example .env
-# [必填] LLM_API_KEY, LLM_BASE_URL, LLM_MODEL_ID
-# [必填] AMAP_API_KEY (高德地图web服务API)
+# [必填] LLM_API_KEY, LLM_BASE_URL（以/v1结尾）, LLM_MODEL_ID（选择有结构化输出能力的模型）
+# [必填] VITE_AMAP_WEB_KEY (高德地图 web服务 类型的key)
 # [必填] Unsplash API Credentials（创建应用后的key）
 
 # 启动 FastAPI (推荐通过 uvicorn)
@@ -156,7 +156,8 @@ cd frontend
 npm install
 
 # 配置前端环境变量，创建 .env 文件
-# 注意：VITE_AMAP_WEB_JS_KEY 必须是 Web前端 JS API 类型的 key
+# [必填] VITE_AMAP_WEB_KEY 与后端保持一致
+# [必填] VITE_AMAP_WEB_JS_KEY 必须是 Web端(JS API) 类型的key
 # 另外，由于 JS API 2.0 政策要求，**还需要在 index.html 注入你的安全密钥(securityJsCode)**
 
 # 启动 Vite 开发服务器
@@ -204,6 +205,6 @@ helloagents-trip-planner-new/
 
 ## 后续可扩展方向 (Roadmap)
 
-1. **真实环境检索强化**: 当前依赖模型自身基础数据的景点信息，偶尔会存在模型臆想的情况。后续可增加专用的搜索引擎工具流（Tavily/SearXNG）。
-2. **知识记忆库 (Zep)**: 虽然现在前端能将整段 JSON 返回给大语言模型进行 AI 答疑，但长对话将快速消耗 Token。可引入 **向量数据库Zep** 管理该应用中长期对话图景。
-3. **多人拼团协同规划**: 未来开发实时 Websocket 机制，允许多个终端用户共同在大屏幕端划拨、删减目标行程节点。
+1. **配置goole地图服务**: 当前依赖高德地图的mcp服务，偶尔会出现调用失败的问题，后续转为goole相关服务，进行景点搜索和酒店搜索等。
+2. **小红书mcp的适配**: 针对景点的相关推荐，计划调用小红书mcp进行搜索，完善景点推荐流。
+3. **计划导入功能**: 针对生成计划导出功能添加json，并添加计划导入模块，方便查看之前生成的计划并进行修改。
