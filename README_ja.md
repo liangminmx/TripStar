@@ -2,7 +2,7 @@
 
 
 > **HelloAgents フレームワークに基づくマルチエージェント連携の旅行計画プラットフォーム**
-<img width="1418" height="619" alt="PixPin_2026-03-11_00-38-31" src="https://github.com/user-attachments/assets/43d55fdf-beb2-47ea-b4a0-219613524776" />
+<img width="1804" height="815" alt="image" src="https://github.com/user-attachments/assets/4bf6f5b1-b67d-4df6-9690-f99367fef473" />
 <p align="center">
   <img src="https://img.shields.io/badge/license-GPL--2.0-orange">
   <img src="https://img.shields.io/badge/version-v2.0.0-green">
@@ -95,9 +95,9 @@ pip install -r requirements.txt
 # .env に API KEY などを記入
 cp .env.example .env
 # [必須] LLM_API_KEY, LLM_BASE_URL, LLM_MODEL_ID
-# [必須] VITE_AMAP_WEB_KEY 
+# [任意] VITE_AMAP_WEB_KEY 
 # [必須] XHS_COOKIE
-# [任意] GOOGLE_MAPS_API_KEY, GOOGLE_MAPS_PROXY
+# [必須] GOOGLE_MAPS_API_KEY, GOOGLE_MAPS_PROXY
 
 # FastAPIを起動 
 uvicorn app.api.main:app --host 0.0.0.0 --port 8000 --reload
@@ -118,6 +118,10 @@ npm install
 # Viteサーバーの起動
 npm run dev
 ```
+> 以下は一部の実行結果で、豊富な機能を探索中です...
+<img width="1649" height="805" alt="image" src="https://github.com/user-attachments/assets/ad3ba6e6-c513-42db-9417-88d991ef2895" />
+<img width="1599" height="823" alt="image" src="https://github.com/user-attachments/assets/ac159dce-0c13-4b49-9796-e0dcd30a5996" />
+<img width="1598" height="801" alt="image" src="https://github.com/user-attachments/assets/1b4b745e-98f1-4868-a6dd-d32909077713" />
 
 ## 今後の最適化の方向
 - [x] ~~Xiaohongshuとの連携~~
