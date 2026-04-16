@@ -1,7 +1,6 @@
-# 旅途星辰 (TripStar) - AI 旅行智能体
-
-> **基于 HelloAgents 框架打造的多智能体协作文旅规划平台**
-<img width="1418" height="619" alt="PixPin_2026-03-11_00-38-31" src="https://github.com/user-attachments/assets/43d55fdf-beb2-47ea-b4a0-219613524776" />
+<div align="center">
+  <img width="651" height="251" alt="brand" src="https://github.com/user-attachments/assets/50c490da-9042-4661-bf8f-f7fd8084a506" />
+</div>
 <p align="center">
   <img src="https://img.shields.io/badge/license-GPL--2.0-orange">
   <img src="https://img.shields.io/badge/version-v2.0.0-green">
@@ -15,7 +14,11 @@
 
 [🇨🇳 中文](README.md) | [🇺🇸 English](README_en.md) | [🇯🇵 日本語](README_ja.md)
 
+
+# 旅途星辰 - AI 旅行智能体
+**基于 HelloAgents 框架打造的多智能体协作文旅规划平台**
 </div>
+
 
 
 > [!IMPORTANT]
@@ -52,55 +55,78 @@
 本项目采用标准的前后端分离架构，分为前端 Vue 交互层、后端 FastAPI 服务层和 LLM/Agents 的智能推理层。
 
 ```mermaid
-graph TD
-    subgraph G1 ["前端交互视图"]
-        A1["参数输入 Home.vue"]
-        A2["沉浸加载动画"]
-        A3["高定路书 Result.vue"]
-        A4["知识图谱侧边栏"]
-        A5["AI 旅行智能体浮窗"]
+sequenceDiagram
+    autonumber
+    
+    participant Client as Frontend (User)
+    participant Route as api/routes/trip.py
+    participant Planner as trip_planner_agent.py
+    participant XHS as xhs_service.py
+    participant Maps as map_dispatcher.py
+    participant LLM as llm_service.py
+    participant POI as api/routes/poi.py
+    participant KG as knowledge_graph_service.py
+
+    Client->>Route: POST /api/trip/plan (城市,天数,偏好)
+    Route-->>Client: 返回 task_id & ws_url
+    Route->>Planner: 启动异步任务 _run_trip_planning(request)
+    Client->>Route: WebSocket 订阅 /ws/{task_id}
+    Note right of Route: 通过 WebSocket 实时推送任务 processing/progress 状态
+    
+    rect rgb(240, 248, 255)
+        Note over Planner, LLM: 并发阶段 (asyncio.gather 优化) 
+        
+        par [1/3] 景点搜索：小红书原生接口提纯
+            Planner->>XHS: search_xhs_attractions(city, keywords, lang)
+            XHS->>XHS: XhsNativeClient 原生签名直连 / SSR 备用爬取
+            XHS->>LLM: 抛入游记杂文，Prompt 要求提纯出景点JSON数组
+            LLM-->>XHS: [{"name": "故宫", "duration": 120, ...}]
+            
+            loop 为每个提纯出的景点补齐坐标
+                XHS->>Maps: geocode_unified(name, city)
+                Note right of Maps: Google 地理编码优先，失败降级高德 REST
+                Maps-->>XHS: 经纬度 {longitude, latitude}
+            end
+            XHS-->>Planner: 拼接整理好的小红书景点候选文本
+            
+        and [2/3] 天气搜索：智能体调用 Tool
+            Planner->>Planner: weather_agent.run()
+            Planner->>Maps: 代理调用 Google/AMap MCP Weather Tool
+            Maps-->>Planner: 返回未来天气数据
+            Note right of Planner: Google API若失败，自动回退请求高德天气REST接口
+            
+        and [3/3] 酒店搜索：智能体调用 Tool
+            Planner->>Planner: hotel_agent.run()
+            Planner->>Maps: 代理调用 Google/AMap MCP POI Text Search
+            Maps-->>Planner: 返回酒店列表
+        end
+    end
+    
+    rect rgb(255, 240, 245)
+        Note over Planner, LLM: 串行聚合阶段：最终规划融合
+        Planner->>LLM: 拼接景点、天气、酒店上下文进入终极 Planner Prompt
+        LLM-->>Planner: 【高危操作】返回包含行程、预算等复杂嵌套的 JSON 字符串
+        
+        Planner->>Planner: _parse_response() 容错解析
+        Note right of Planner: 1. 清理杂乱字符<br>2. 修复未转义引号<br>3. 截断修复(补齐括号)<br>4. 暴力提取<br>5. 若均失败再求助 LLM 修补
     end
 
-    subgraph G2 ["后端网关"]
-        B1["异步轮询机制 <br/> POST/plan & GET/status"]
-        B2["上下文伴游问答<br/>POST/chat/ask"]
-        B3["景点搜图 API<br/>GET/poi/photo"]
+    Planner->>KG: build_knowledge_graph(trip_plan, lang)
+    Note right of KG: 提取城市、日程、景点、预算、建议的节点与关联边，并按多语言翻译标签
+    KG-->>Planner: graph_data (nodes, edges, categories)
+
+    Planner-->>Route: 返回完整 TripPlanResponse 结构
+    Route->>Route: _update_task_state(status="completed")持久化至磁盘
+    Route-->>Client: WebSocket 推送成功结果 (含 plan JSON 及 graph 拓扑)
+    
+    rect rgb(240, 255, 240)
+        Note over Client, XHS: 异步前端懒加载：景点图片搜图
+        Client->>POI: GET /api/poi/photo?name=xxx
+        POI->>XHS: get_photo_from_xhs(keyword)
+        XHS->>XHS: 原生搜索 "xxx 风景" 获取首个有效笔记的第一张图 URL
+        XHS-->>POI: photo_url
+        POI-->>Client: 图片加载成功
     end
-
-    subgraph G3 ["多智能体协同引擎"]
-        C1["旅程总控 Agent"]
-        C2["小红书景点提取<br/>(SSR + LLM 提纯)"]
-        C3["天气预报 Agent"]
-        C4["酒店推荐 Agent"]
-    end
-
-    subgraph G4 ["服务层"]
-        D1["LLM模型API <br/> doubao-seed-1-8-251228"]
-        D2["高德 MCP Server <br/> 地理编码/POI搜索"]
-        D3["天气/时间检索工具"]
-        D4["小红书 API<br/>搜索/SSR 抓取"]
-    end
-
-    %% 交互连线
-    A1 --> B1
-    A3 <--> B1
-    A3 --> B3
-    A5 <--> B2
-
-    B1 --> C1
-    B2 --> D1
-    B3 --> D4
-
-    C1 --> C2
-    C1 --> C3
-    C1 --> C4
-
-    C2 <--> D4
-    C2 --> D1
-    C2 --> D2
-    C3 <--> D3
-    C4 <--> D2
-
 ```
 
 ---
