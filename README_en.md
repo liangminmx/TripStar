@@ -2,7 +2,7 @@
 
 
 > **A Multi-Agent Collaborative Travel Planning Platform Based on the HelloAgents Framework**
-<img width="1418" height="619" alt="PixPin_2026-03-11_00-38-31" src="https://github.com/user-attachments/assets/43d55fdf-beb2-47ea-b4a0-219613524776" />
+<img width="1823" height="805" alt="image" src="https://github.com/user-attachments/assets/e7fb750f-32e5-4a77-93f7-e7b1c4e5e915" />
 <p align="center">
   <img src="https://img.shields.io/badge/license-GPL--2.0-orange">
   <img src="https://img.shields.io/badge/version-v2.0.0-green">
@@ -43,8 +43,9 @@ Unlike traditional travel guide websites, this project adopts an innovative mode
 * **Luxury Dark Glassmorphism Design**: A completely redesigned Dark Luxury Glassmorphism UI, offering a highly immersive, premium visual experience.
 
 ---
-> For example, if you want to travel to Xi'an, China (currently only supports domestic locations), simply fill in the destination, dates, and preferences, wait for the itinerary planning results, and preview how to arrange your tour at a glance.
-<img width="1606" height="740" alt="image" src="https://github.com/user-attachments/assets/699fa242-b959-460d-9442-90be0b19db22" />
+> For example, if you want to travel to USA-NewYork, simply fill in the destination, dates, and preferences, wait for the itinerary planning results, and preview how to arrange your tour at a glance.
+<img width="1599" height="741" alt="image" src="https://github.com/user-attachments/assets/959d4a2e-7e2b-4136-bd93-bc9ba90a4e80" />
+
 
 ## System Architecture
 
@@ -241,11 +242,16 @@ TripStar/
 ├── docker-compose.yaml            # Single-node Compose Setup
 └── README_en.md
 ```
+> Below are some of the operation results, exploring rich functions...
+<img width="1599" height="823" alt="image" src="https://github.com/user-attachments/assets/0af91914-a087-496f-8a69-caed6748374d" />
+<img width="1649" height="805" alt="image" src="https://github.com/user-attachments/assets/c1d08148-6f81-4428-b10d-ff51083af1a6" />
+<img width="1598" height="801" alt="image" src="https://github.com/user-attachments/assets/1b4b745e-98f1-4868-a6dd-d32909077713" />
+
 
 ## Future Optimizations
-- [x] ~~Xiaohongshu Integration~~ (v2.0 Done)
-- [x] ~~Attraction Images via Xiaohongshu Search~~ (v2.0 Done)
-- [x] ~~Attraction Reservation Prompts~~ (v2.0 Done)
+- [x] ~~Xiaohongshu Integration~~
+- [x] ~~Attraction Images via Xiaohongshu Search~~
+- [x] ~~Attraction Reservation Prompts~~
 - [x] ~~Google Maps Dual-Engine Fallback~~
 - [x] ~~i18n Multi-Language Model Inference Adaptation & Deep Knowledge Graph Translation~~
 - [x] ~~History Plans Record Support~~
