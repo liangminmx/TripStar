@@ -279,6 +279,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { message } from 'ant-design-vue'
 import { generateTripPlan, getTripHistory } from '@/services/api'
+import { getCurrentLocale } from '@/i18n'
 import NavBar from '@/components/NavBar.vue'
 import type { TripFormData, TripTaskEvent, TripHistoryItem } from '@/types'
 import type { Dayjs } from 'dayjs'
@@ -471,6 +472,7 @@ const handleSubmit = async () => {
       accommodation: formData.accommodation,
       preferences: formData.preferences,
       free_text_input: formData.free_text_input,
+      language: getCurrentLocale(),
     }
 
     const response = await generateTripPlan(requestData, {

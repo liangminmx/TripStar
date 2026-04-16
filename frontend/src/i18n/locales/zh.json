@@ -41,6 +41,8 @@
       "apiBaseUrl": "后端地址",
       "amapJsKey": "高德地图 JS Key",
       "amapWebKey": "高德地图 Web Service Key",
+      "googleMapsApiKey": "Google Maps API Key",
+      "googleMapsProxy": "Google Maps 代理地址",
       "openaiBaseUrl": "OpenAI 兼容格式 Base URL",
       "openaiModel": "OpenAI 兼容格式 Model",
       "openaiApiKey": "OpenAI 兼容格式 API Key",
@@ -48,6 +50,8 @@
     },
     "placeholders": {
       "apiBaseUrl": "例如：http://localhost:8000",
+      "googleMapsApiKey": "填写后将优先使用 Google Maps（留空则使用高德）",
+      "googleMapsProxy": "例如: http://127.0.0.1:7890 或 socks5://127.0.0.1:1080",
       "openaiBaseUrl": "例如：https://api.openai.com/v1",
       "openaiModel": "例如：gpt-4o-mini",
       "xhsCookie": "粘贴完整 Cookie 字符串"

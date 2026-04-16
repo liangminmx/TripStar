@@ -13,9 +13,12 @@ const ENV_API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:
 const ENV_AMAP_WEB_JS_KEY = import.meta.env.VITE_AMAP_WEB_JS_KEY ?? ''
 const RUNTIME_API_BASE_STORAGE_KEY = 'tripstar.runtime.api_base_url'
 const RUNTIME_AMAP_WEB_JS_KEY_STORAGE_KEY = 'tripstar.runtime.amap_web_js_key'
+const RUNTIME_GOOGLE_MAPS_API_KEY_STORAGE_KEY = 'tripstar.runtime.google_maps_api_key'
 const DEFAULT_RUNTIME_BACKEND_SETTINGS: BackendRuntimeSettings = {
   vite_amap_web_key: '',
   vite_amap_web_js_key: '',
+  google_maps_api_key: '',
+  google_maps_proxy: '',
   xhs_cookie: '',
   openai_api_key: '',
   openai_base_url: 'https://api.openai.com/v1',
@@ -90,6 +93,19 @@ export const setRuntimeMapJsKey = (value: string): string => {
   return normalized
 }
 
+export const getRuntimeGoogleMapsApiKey = (): string => {
+  if (typeof window === 'undefined') return ''
+  return normalizeText(window.localStorage.getItem(RUNTIME_GOOGLE_MAPS_API_KEY_STORAGE_KEY))
+}
+
+export const setRuntimeGoogleMapsApiKey = (value: string): string => {
+  const normalized = normalizeText(value)
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem(RUNTIME_GOOGLE_MAPS_API_KEY_STORAGE_KEY, normalized)
+  }
+  return normalized
+}
+
 const getWsBaseUrl = (): string => getRuntimeApiBaseUrl().replace(/^http/i, 'ws').replace(/\/+$/, '')
 
 const normalizeBackendRuntimeSettings = (
@@ -98,6 +114,12 @@ const normalizeBackendRuntimeSettings = (
   vite_amap_web_key: normalizeText(data?.vite_amap_web_key ?? DEFAULT_RUNTIME_BACKEND_SETTINGS.vite_amap_web_key),
   vite_amap_web_js_key: normalizeText(
     data?.vite_amap_web_js_key ?? DEFAULT_RUNTIME_BACKEND_SETTINGS.vite_amap_web_js_key
+  ),
+  google_maps_api_key: normalizeText(
+    data?.google_maps_api_key ?? DEFAULT_RUNTIME_BACKEND_SETTINGS.google_maps_api_key
+  ),
+  google_maps_proxy: normalizeText(
+    data?.google_maps_proxy ?? DEFAULT_RUNTIME_BACKEND_SETTINGS.google_maps_proxy
   ),
   xhs_cookie: normalizeText(data?.xhs_cookie ?? DEFAULT_RUNTIME_BACKEND_SETTINGS.xhs_cookie),
   openai_api_key: normalizeText(data?.openai_api_key ?? DEFAULT_RUNTIME_BACKEND_SETTINGS.openai_api_key),
@@ -173,6 +195,11 @@ export async function getRuntimeSettings(): Promise<RuntimeSettings> {
   const apiBaseUrl = getRuntimeApiBaseUrl()
   const mapJsKey = getRuntimeMapJsKey() || backend.vite_amap_web_js_key
 
+  // 同步 Google Maps API Key 到 localStorage 供前端地图组件读取
+  if (backend.google_maps_api_key) {
+    setRuntimeGoogleMapsApiKey(backend.google_maps_api_key)
+  }
+
   return {
     api_base_url: apiBaseUrl,
     ...backend,
@@ -186,6 +213,8 @@ export async function saveRuntimeSettings(settings: RuntimeSettings): Promise<Ru
   const updates: Partial<BackendRuntimeSettings> = {
     vite_amap_web_key: settings.vite_amap_web_key,
     vite_amap_web_js_key: settings.vite_amap_web_js_key,
+    google_maps_api_key: settings.google_maps_api_key,
+    google_maps_proxy: settings.google_maps_proxy,
     xhs_cookie: settings.xhs_cookie,
     openai_api_key: settings.openai_api_key,
     openai_base_url: settings.openai_base_url,
@@ -203,6 +232,7 @@ export async function saveRuntimeSettings(settings: RuntimeSettings): Promise<Ru
 
   const apiBaseUrl = setRuntimeApiBaseUrl(targetApiBaseUrl)
   const mapJsKey = setRuntimeMapJsKey(settings.vite_amap_web_js_key || backend.vite_amap_web_js_key)
+  setRuntimeGoogleMapsApiKey(settings.google_maps_api_key || backend.google_maps_api_key)
 
   emitRuntimeSettingsUpdated()
 

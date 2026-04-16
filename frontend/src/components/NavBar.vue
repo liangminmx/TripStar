@@ -103,6 +103,28 @@
 
               <a-form-item>
                 <template #label>
+                  <span class="field-label">{{ t('settings.labels.googleMapsApiKey') }}</span>
+                </template>
+                <a-input-password
+                  v-model:value="settingsForm.google_maps_api_key"
+                  :placeholder="t('settings.placeholders.googleMapsApiKey')"
+                  allow-clear
+                />
+              </a-form-item>
+
+              <a-form-item>
+                <template #label>
+                  <span class="field-label">{{ t('settings.labels.googleMapsProxy') }}</span>
+                </template>
+                <a-input
+                  v-model:value="settingsForm.google_maps_proxy"
+                  :placeholder="t('settings.placeholders.googleMapsProxy')"
+                  allow-clear
+                />
+              </a-form-item>
+
+              <a-form-item>
+                <template #label>
                   <span class="field-label">{{ t('settings.labels.openaiBaseUrl') }}</span>
                 </template>
                 <a-input
@@ -164,6 +186,8 @@ const settingsForm = reactive<RuntimeSettings>({
   api_base_url: '',
   vite_amap_web_key: '',
   vite_amap_web_js_key: '',
+  google_maps_api_key: '',
+  google_maps_proxy: '',
   xhs_cookie: '',
   openai_api_key: '',
   openai_base_url: '',
@@ -187,6 +211,8 @@ const applyRuntimeSettings = (settings: RuntimeSettings) => {
   settingsForm.api_base_url = settings.api_base_url || ''
   settingsForm.vite_amap_web_key = settings.vite_amap_web_key || ''
   settingsForm.vite_amap_web_js_key = settings.vite_amap_web_js_key || ''
+  settingsForm.google_maps_api_key = settings.google_maps_api_key || ''
+  settingsForm.google_maps_proxy = settings.google_maps_proxy || ''
   settingsForm.xhs_cookie = settings.xhs_cookie || ''
   settingsForm.openai_api_key = settings.openai_api_key || ''
   settingsForm.openai_base_url = settings.openai_base_url || ''
@@ -213,6 +239,8 @@ const saveSettingsNow = async () => {
       api_base_url: settingsForm.api_base_url,
       vite_amap_web_key: settingsForm.vite_amap_web_key,
       vite_amap_web_js_key: settingsForm.vite_amap_web_js_key,
+      google_maps_api_key: settingsForm.google_maps_api_key,
+      google_maps_proxy: settingsForm.google_maps_proxy,
       xhs_cookie: settingsForm.xhs_cookie,
       openai_api_key: settingsForm.openai_api_key,
       openai_base_url: settingsForm.openai_base_url,

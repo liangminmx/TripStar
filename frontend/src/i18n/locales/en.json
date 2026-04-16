@@ -41,6 +41,8 @@
       "apiBaseUrl": "Backend URL",
       "amapJsKey": "AMap JS Key",
       "amapWebKey": "AMap Web Service Key",
+      "googleMapsApiKey": "Google Maps API Key",
+      "googleMapsProxy": "Google Maps Proxy",
       "openaiBaseUrl": "OpenAI-Compatible Base URL",
       "openaiModel": "OpenAI-Compatible Model",
       "openaiApiKey": "OpenAI-Compatible API Key",
@@ -48,6 +50,8 @@
     },
     "placeholders": {
       "apiBaseUrl": "e.g. http://localhost:8000",
+      "googleMapsApiKey": "When set, Google Maps is used. Leave empty for AMap.",
+      "googleMapsProxy": "e.g. http://127.0.0.1:7890 or socks5://127.0.0.1:1080",
       "openaiBaseUrl": "e.g. https://api.openai.com/v1",
       "openaiModel": "e.g. gpt-4o-mini",
       "xhsCookie": "Paste full cookie string"

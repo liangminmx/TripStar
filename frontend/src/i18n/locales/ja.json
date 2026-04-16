@@ -41,6 +41,8 @@
       "apiBaseUrl": "バックエンド URL",
       "amapJsKey": "AMap JS Key",
       "amapWebKey": "AMap Web Service Key",
+      "googleMapsApiKey": "Google Maps API Key",
+      "googleMapsProxy": "Google Maps プロキシ",
       "openaiBaseUrl": "OpenAI 格式 Base URL",
       "openaiModel": "OpenAI 格式 Model",
       "openaiApiKey": "OpenAI 格式 API Key",
@@ -48,6 +50,8 @@
     },
     "placeholders": {
       "apiBaseUrl": "例: http://localhost:8000",
+      "googleMapsApiKey": "設定時は Google Maps を使用。空の場合は AMap。",
+      "googleMapsProxy": "例: http://127.0.0.1:7890 または socks5://127.0.0.1:1080",
       "openaiBaseUrl": "例: https://api.openai.com/v1",
       "openaiModel": "例: gpt-4o-mini",
       "xhsCookie": "Cookie 文字列を貼り付け"
